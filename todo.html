@@ -17,7 +17,8 @@
                 super(props);
                 this.state = {
                     input: '', 
-                    tasks: []
+                    tasks: [], 
+                    count: 0
                 }
             }
 
@@ -26,13 +27,15 @@
                     <div>
                         <div>
                             <h1>Tasks</h1>
-                            <input onChange={this.change} value={this.state.input}/>
-                            <button onClick={this.click}>Add</button>
                             <ul>
                                 {this.state.tasks.map((task, i) => 
-                                <li key={i}><button data-key={i} onClick={this.remove}>-</button>&nbsp;{task}</li>)}
+                                <li key={i}><button onClick={() => this.remove(i)}>-</button>&nbsp;{task}</li>)}
                             </ul>
-
+                            <div>
+                                <input onChange={this.change} value={this.state.input}/>
+                                <button onClick={this.click}>Add</button>
+                            </div>
+                            Number of tasks: {this.state.tasks.length}
                         </div>
                     </div>
                 );
@@ -46,18 +49,19 @@
 
             click = () => {
                 this.setState(state => ({
-                    tasks: [...this.state.tasks, this.state.input], 
+                    tasks: [...state.tasks, state.input],
                     input: ''
                 }));
             }
 
-            remove = event => {
-                const tasks = [...this.state.tasks];
-                const i = parseInt(event.target.dataset.key);
-                tasks.splice(i, 1);
-                this.setState(state => ({
-                    tasks: tasks
-                }));
+            remove = (index) => {
+                this.setState(state => {
+                    const tasks = [...this.state.tasks];
+                    tasks.splice(index, 1);
+                    return {
+                        tasks
+                    }
+                });
             }
         }
 
