@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en" class="h-100 d-flex justify-content-center align-items-center">
+  <head>
+    <title>Connect 4</title>
+    <meta charset="UTF-8" />    
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.13.0/css/all.css" integrity="sha384-Bfad6CLCknfcloXFOyFnlgtENryhrpZCe29RTifKEixXQZ38WheV+i/6YWSzkz3V" crossorigin="anonymous">
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        html, body {
+            text-align: center;
+        }
+
+        tbody {
+            transform:rotate(270deg);
+        }
+
+        @media (min-width: 500px) {
+            td {
+                width: 70px;
+                height: 70px;
+            }
+
+            svg {
+                width: 70px;
+                height: 70px;
+            }
+        }
+
+        @media (max-width: 499px) {
+            td {
+                
+                width: 40px;
+                height: 40px;
+            }
+
+            svg {
+                width: 40px;
+                height: 40px;
+            }
+        }
+
+
+    </style>  
+</head>
+  <body>
+    <div id="app"></div>
+    <script type="text/babel">
+
+        class Circle extends React.Component {
+            render() {
+                return (
+                    <svg>
+                        <circle cx={window.innerWidth >= 500? "35" : "20"} cy={window.innerWidth >= 500? "35" : "20"} r={window.innerWidth >= 500? "30" : "18"} fill={this.props.color} />
+                    </svg> 
+                );
+            }
+        }
+ 
+        class App extends React.Component {
+
+            constructor(props) {
+                super(props);
+                this.state = {
+                    red: true,
+                    winner: null, 
+                    game: [
+                        [null, null, null, null, null, null, null], 
+                        [null, null, null, null, null, null, null], 
+                        [null, null, null, null, null, null, null], 
+                        [null, null, null, null, null, null, null], 
+                        [null, null, null, null, null, null, null], 
+                        [null, null, null, null, null, null, null], 
+                        [null, null, null, null, null, null, null]
+                    ]
+                };
+            }
+
+
+            render() {
+                const rows = this.state.game.map((column, i)=> {
+                    return (                      
+                        <tr onClick={() => this.makeMove(i)} key={i}>
+                            {column.map((move, j) => <td key={j}>{move === null ? <Circle color="white" /> : ((move === "Red") ? <Circle color="red" /> : <Circle color="yellow" />) }</td>)}                    
+                        </tr>    
+                    );
+                })
+
+                return (
+                    <div>
+                        <h2>CONNECT <strong>4</strong></h2>
+                        <div>
+                            {this.state.winner !== null ? "Winner: " + this.state.winner : (this.state.red ? "Turn: Red" : "Turn: Yellow")}
+                        </div>
+                        <div className="m-3 border shadow">
+                            <table className="table-hover table-dark">
+                                <tbody> 
+                                    {rows}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                )
+            }
+
+            makeMove = (i) => {
+                this.setState(state => {
+                    const turn = state.red === true ? "Red" : "Yellow";
+                    const game = [...state.game];
+                    let flag = false;
+
+                    for(let j = 0; j < 7; j++) {
+                        if (game[i][j] === null && state.winner === null) {
+                            game[i][j] = turn;
+                            flag = true;
+                            break;
+                        }
+                    }
+
+                    if (flag === true && state.winner === null) {
+                        return {
+                            game, 
+                            red: !state.red                        
+                        }
+                    }
+                    
+                    return;
+                }, this.checkWinner)
+            }
+
+            checkWinner = () => {
+                
+                const game = this.state.game;
+                const next = this.state.red === true ? "Yellow" : "Red";
+                
+                // check columns
+                for (let i = 0; i < game.length; i++) {
+                    for(let j = 0; j < game.length - 3; j++) {
+                        if (game[i][j] === next && game[i][j+1] === next && game[i][j+2] === next && game[i][j+3] === next) {
+                            this.setState(state => {
+                                return {
+                                    winner: next
+                                }
+                            });
+                            break;
+                        }
+                    }
+                } 
+
+                // check rows 
+                for(let j = 0; j < game.length; j++) {
+                    for (let i = 0; i < game.length - 3; i++) {
+                        if (game[i][j] === next && game[i+1][j] === next && game[i+2][j] === next && game[i+3][j] === next) {
+                            this.setState(state => {
+                                return {
+                                    winner: next
+                                }
+                            });
+                            break;
+                        }
+                    }
+                }
+
+                // check diagonals
+
+
+                
+                return;
+
+            }
+        }
+
+
+        ReactDOM.render(<App />, document.querySelector('#app'));
+    </script>
+  </body>
+</html>
