@@ -47,8 +47,8 @@
             renderProblem () {
                 return (
                     <div className="d-flex flex-column align-items-center w-250px">
-                        <h1 className={this.state.incorrect? "display-1 wrong":"text-center display-1"} >{this.state.num1} + {this.state.num2}</h1>
-                        <input className="form-control w-75" onChange={this.updateResponse} onKeyPress={this.inputKeyPress} value={this.state.response} />
+                        <strong className={this.state.incorrect? "display-1 wrong text-nowrap":"display-1 text-nowrap"} >{this.state.num1} + {this.state.num2}</strong>
+                        <input className="form-control mt-3 w-50" autoFocus onChange={this.updateResponse} onKeyPress={this.inputKeyPress} value={this.state.response} />
                         <div className="mt-3">Score: {this.state.score}</div>
                     </div>
                 );
