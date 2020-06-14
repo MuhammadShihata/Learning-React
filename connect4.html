@@ -180,11 +180,28 @@
             }
 
             check = (game, n) => {
+
+                // Break board of nines to smaller border of fours (to be easier to check)
+                // Access smaller using the first element of the first child array
                 for (let i = 0; i < 4; i++) {
-                    for(let j = 0; j < 4; j++) { 
-                        if ((game[i][j] === n && game[i][j+1] === n && game[i][j+2] === n && game[i][j+3] === n) ||
-                            (game[i][j] === n && game[i+1][j] === n && game[i+2][j] === n && game[i+3][j] === n) ||  
-                            (game[i][j] === n && game[i+1][j+1] === n && game[i+2][j+2] === n && game[i+3][j+3] === n) || 
+                    for(let j = 0; j < 4; j++) {
+
+                        // Check Columns
+                        for (let k = 0; k < 4; k++) {
+                            if (game[i+k][j] === n && game[i+k][j+1] === n && game[i+k][j+2] === n && game[i+k][j+3] === n) {
+                                return true;
+                            }
+                        }
+
+                        // Check Rows
+                        for (let k = 0; k < 4; k++) {
+                            if (game[i][j+k] === n && game[i+1][j+k] === n && game[i+2][j+k] === n && game[i+3][j+k] === n) {
+                                return true;
+                            }
+                        }
+
+                        // Check Diagonals
+                        if ((game[i][j] === n && game[i+1][j+1] === n && game[i+2][j+2] === n && game[i+3][j+3] === n) || 
                             (game[i][j+3] === n && game[i+1][j+2] === n && game[i+2][j+1] === n && game[i+3][j] === n)) {
                             return true;
                         }
